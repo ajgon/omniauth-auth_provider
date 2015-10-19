@@ -1,0 +1,21 @@
+PreCommit:
+  ALL:
+    on_warn: fail # Treat all warnings as failures
+  BrokenSymlinks:
+    enabled: true
+  BundleCheck:
+    enabled: true
+  CaseConflicts:
+    enabled: true
+  HardTabs:
+    enabled: true
+  LocalPathsInGemfile:
+    enabled: true
+  MergeConflicts:
+    enabled: true
+  Reek:
+    enabled: true
+  RuboCop:
+    enabled: true
+  TrailingWhitespace:
+    enabled: true
