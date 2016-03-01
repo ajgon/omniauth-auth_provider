@@ -38,7 +38,9 @@ module OmniAuth
       info do
         {
           email: raw_info['email'],
-          client_id: raw_info['client_id']
+          client_id: raw_info['client_id'],
+          name: [raw_info['first_name'], raw_info['last_name']].join(' '),
+          image: raw_info['avatar_url']
         }
       end
 

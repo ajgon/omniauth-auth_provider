@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    omniauth-auth_provider (1.0.0)
+    omniauth-auth_provider (1.0.1)
       omniauth-oauth2
 
 GEM
@@ -126,4 +126,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

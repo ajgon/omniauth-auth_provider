@@ -86,7 +86,10 @@ describe OmniAuth::Strategies::AuthProvider do
         'email' => 'user@example.com',
         'client_id' => 'wgpYTrLmRL8DjBjAEk7BWbGc',
         'provider' => 'auth_provider',
-        'uid' => 'wgpYTrLmRL8DjBjAEk7BWbGc'
+        'uid' => 'wgpYTrLmRL8DjBjAEk7BWbGc',
+        'first_name' => 'Dummy',
+        'last_name' => 'User',
+        'avatar_url' => 'http://i.imgur.com/DdxlUu2.jpg'
       }
       allow(subject).to receive(:raw_info) { @raw_info }
     end
@@ -102,6 +105,14 @@ describe OmniAuth::Strategies::AuthProvider do
 
       it 'returns the client_id' do
         expect(subject.info[:client_id]).to eq('wgpYTrLmRL8DjBjAEk7BWbGc')
+      end
+
+      it 'returns the name' do
+        expect(subject.info[:name]).to eq('Dummy User')
+      end
+
+      it 'returns the image' do
+        expect(subject.info[:image]).to eq('http://i.imgur.com/DdxlUu2.jpg')
       end
 
       it 'returns the raw_info in extra' do
