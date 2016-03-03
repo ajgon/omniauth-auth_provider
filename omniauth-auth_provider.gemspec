@@ -1,9 +1,10 @@
 # -*- encoding: utf-8 -*-
+# frozen_string_literal: true
 $LOAD_PATH.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'omniauth-auth_provider'
-  s.version     = '1.0.2'
+  s.version     = '1.0.3'
   s.authors     = ['AuthProvider', 'Igor Rzegocki']
   s.email       = ['igor@rzegocki.pl']
   s.homepage    = 'https://github.com/ajgon/omniauth-auth_provider'

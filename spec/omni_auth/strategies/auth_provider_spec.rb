@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'spec_helper'
 
 describe OmniAuth::Strategies::AuthProvider do
@@ -8,15 +9,21 @@ describe OmniAuth::Strategies::AuthProvider do
     end.to_app
   end
 
+  let(:request) do
+    request = double('Request')
+    allow(request).to receive(:params)
+    allow(request).to receive(:cookies)
+    allow(request).to receive(:env)
+    request
+  end
+
+  let(:session) do
+    session = double('Session')
+    allow(session).to receive(:delete).with('omniauth.state').and_return('state')
+  end
+
   before :each do
     OmniAuth.config.test_mode = true
-    @request = double('Request')
-    allow(@request).to receive(:params)
-    allow(@request).to receive(:cookies)
-    allow(@request).to receive(:env)
-
-    @session = double('Session')
-    allow(@session).to receive(:delete).with('omniauth.state').and_return('state')
   end
 
   after do
@@ -24,10 +31,10 @@ describe OmniAuth::Strategies::AuthProvider do
   end
 
   subject do
-    OmniAuth::Strategies::AuthProvider.new(
+    described_class.new(
       app, 'client_id', 'client_secret', namespace: 'test.dummy-provider.dev'
     ).tap do |strategy|
-      allow(strategy).to receive(:request) { @request }
+      allow(strategy).to receive(:request) { request }
     end
   end
 
@@ -48,14 +55,14 @@ describe OmniAuth::Strategies::AuthProvider do
       expect(subject.options.client_options.userinfo_url).to eq 'http://test.dummy-provider.dev/userinfo'
     end
 
-    it 'should raise an ArgumentError error if no namespace passed' do
+    it 'raises an ArgumentError error if no namespace passed' do
       expect do
-        OmniAuth::Strategies::AuthProvider.new(app, 'client_id', 'client_secret')
+        described_class.new(app, 'client_id', 'client_secret')
       end.to raise_error(ArgumentError)
     end
 
-    it 'should return secure URLs if "secure" option provided' do
-      strategy = OmniAuth::Strategies::AuthProvider.new(
+    it 'returns secure URLs if "secure" option provided' do
+      strategy = described_class.new(
         app, 'client_id', 'client_secret', namespace: 'test.dummy-provider.dev', secure: true)
 
       expect(strategy.options.client_options.authorize_url).to eq 'https://test.dummy-provider.dev/oauth/authorize'
@@ -78,11 +85,19 @@ describe OmniAuth::Strategies::AuthProvider do
       expect(subject.authorize_params).to include('state')
       expect(subject.authorize_params).to include('redirect_uri')
     end
+
+    it 'query_string' do
+      allow(subject).to receive(:request) do
+        double('Request', query_string: 'code=123&state=456&other=789')
+      end
+
+      expect(subject.query_string).to eq '?other=789'
+    end
   end
 
   describe 'callback phase' do
-    before :each do
-      @raw_info = {
+    let(:raw_info) do
+      {
         'email' => 'user@example.com',
         'client_id' => 'wgpYTrLmRL8DjBjAEk7BWbGc',
         'provider' => 'auth_provider',
@@ -91,7 +106,10 @@ describe OmniAuth::Strategies::AuthProvider do
         'last_name' => 'User',
         'avatar_url' => 'http://i.imgur.com/DdxlUu2.jpg'
       }
-      allow(subject).to receive(:raw_info) { @raw_info }
+    end
+
+    before :each do
+      allow(subject).to receive(:raw_info) { raw_info }
     end
 
     context 'info' do
@@ -116,21 +134,25 @@ describe OmniAuth::Strategies::AuthProvider do
       end
 
       it 'returns the raw_info in extra' do
-        expect(subject.extra[:raw_info]).to eq(@raw_info)
+        expect(subject.extra[:raw_info]).to eq(raw_info)
       end
     end
 
     context 'get token' do
+      let(:access_token) do
+        access_token = double('OAuth2::AccessToken')
+
+        allow(access_token).to receive(:token)
+        allow(access_token).to receive(:expires?)
+        allow(access_token).to receive(:expires_at)
+        allow(access_token).to receive(:refresh_token)
+        allow(access_token).to receive(:params)
+
+        access_token
+      end
+
       before :each do
-        @access_token = double('OAuth2::AccessToken')
-
-        allow(@access_token).to receive(:token)
-        allow(@access_token).to receive(:expires?)
-        allow(@access_token).to receive(:expires_at)
-        allow(@access_token).to receive(:refresh_token)
-        allow(@access_token).to receive(:params)
-
-        allow(subject).to receive(:access_token) { @access_token }
+        allow(subject).to receive(:access_token) { access_token }
       end
 
       it 'returns a Hash' do
@@ -138,7 +160,7 @@ describe OmniAuth::Strategies::AuthProvider do
       end
 
       it 'returns the token' do
-        allow(@access_token).to receive(:token) {
+        allow(access_token).to receive(:token) {
           {
             access_token: 'OTqSFa9zrh0VRGAZHH4QPJISCoynRwSy9FocUazuaU950EVcISsJo3pST11iTCiI',
             token_type: 'bearer'

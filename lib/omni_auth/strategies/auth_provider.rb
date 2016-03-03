@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'omniauth-oauth2'
 
 module OmniAuth
@@ -14,7 +15,7 @@ module OmniAuth
         client_options = @options.client_options
         namespace = @options[:namespace]
 
-        fail(ArgumentError, "Received wrong number of arguments. #{args.inspect}") unless namespace
+        raise(ArgumentError, "Received wrong number of arguments. #{args.inspect}") unless namespace
 
         client_options.site = "#{protocol}://#{namespace}"
         client_options.authorize_url = "#{protocol}://#{namespace}/oauth/authorize"
@@ -27,6 +28,11 @@ module OmniAuth
           redirect_uri = request.params['redirect_uri']
           param[:redirect_uri] = redirect_uri if redirect_uri
         end
+      end
+
+      def query_string
+        clean_query_string = URI.encode_www_form(CGI.parse(request.query_string).except('code', 'state'))
+        clean_query_string.empty? ? '' : "?#{clean_query_string}"
       end
 
       uid { raw_info['uid'] }

@@ -1,3 +1,5 @@
+require: rubocop-rspec
+
 Metrics/LineLength:
   Max: 120
 
@@ -9,3 +11,6 @@ Style/ModuleFunction:
 
 Style/FileName:
   Enabled: false
+
+AllCops:
+  TargetRubyVersion: 2.3

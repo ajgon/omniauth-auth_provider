@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 source 'http://rubygems.org'
 
 gemspec
@@ -12,6 +13,7 @@ group :development, :test do
 
   # Code quality
   gem 'rubocop', require: false
+  gem 'rubocop-rspec', require: false
   gem 'reek', require: false
   gem 'overcommit', require: false
 end
