@@ -1,9 +1,11 @@
 # frozen_string_literal: true
+
 require 'omniauth-oauth2'
 
 module OmniAuth
   module Strategies
     # AuthProvider strategy for OmniAuth
+    # :reek:InstanceVariableAssumption
     class AuthProvider < OmniAuth::Strategies::OAuth2
       option :name, :auth_provider
       option :namespace, nil

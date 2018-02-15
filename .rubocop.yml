@@ -12,5 +12,8 @@ Style/ModuleFunction:
 Style/FileName:
   Enabled: false
 
+RSpec/MultipleExpectations:
+  Enabled: false
+
 AllCops:
   TargetRubyVersion: 2.3

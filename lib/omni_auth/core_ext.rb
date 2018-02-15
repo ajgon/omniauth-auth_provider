@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # except method for Hash
 class Hash
   def except(*keys)

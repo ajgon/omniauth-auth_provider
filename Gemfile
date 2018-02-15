@@ -1,19 +1,20 @@
 # frozen_string_literal: true
+
 source 'http://rubygems.org'
 
 gemspec
 
 group :development, :test do
-  gem 'rspec'
+  gem 'gem-release'
   gem 'rack-test'
+  gem 'rake'
+  gem 'rspec'
   gem 'simplecov'
   gem 'webmock'
-  gem 'rake'
-  gem 'gem-release'
 
   # Code quality
+  gem 'overcommit', require: false
+  gem 'reek', require: false
   gem 'rubocop', require: false
   gem 'rubocop-rspec', require: false
-  gem 'reek', require: false
-  gem 'overcommit', require: false
 end
